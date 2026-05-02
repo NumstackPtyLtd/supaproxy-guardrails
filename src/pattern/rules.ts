@@ -6,13 +6,13 @@ import type { PatternRule } from '../types.js'
  * Workspace-specific rules can be added via configuration.
  */
 export const BUILT_IN_RULES: PatternRule[] = [
-  // PII
+  // PII - mask by default (preserves query usefulness)
   {
     name: 'za_id_number',
     category: 'pii',
     pattern: '\\b[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{7}\\b',
     flags: 'g',
-    action: 'redact',
+    action: 'mask',
   },
   {
     name: 'credit_card',
@@ -26,17 +26,17 @@ export const BUILT_IN_RULES: PatternRule[] = [
     category: 'pii',
     pattern: '\\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\\b',
     flags: 'g',
-    action: 'redact',
+    action: 'hash',
   },
   {
     name: 'phone',
     category: 'pii',
     pattern: '\\b(?:\\+?\\d{1,3}[-.\\s]?)?\\(?\\d{2,4}\\)?[-.\\s]?\\d{3,4}[-.\\s]?\\d{3,4}\\b',
     flags: 'g',
-    action: 'redact',
+    action: 'mask',
   },
 
-  // Credentials
+  // Credentials - block (never forward)
   {
     name: 'api_key',
     category: 'credentials',

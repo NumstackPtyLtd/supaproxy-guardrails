@@ -1,11 +1,12 @@
 // Types
 export type {
   GuardrailPlugin,
-  GuardrailAction,
+  GuardrailInput,
+  GuardrailOutput,
   GuardrailStage,
   GuardrailContext,
-  ScreeningResult,
   PatternRule,
+  PatternAction,
 } from './types.js'
 
 // Registry

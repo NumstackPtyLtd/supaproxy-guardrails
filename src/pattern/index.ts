@@ -1,5 +1,14 @@
-import type { GuardrailPlugin, ScreeningResult, GuardrailContext, PatternRule } from '../types.js'
+import type { GuardrailPlugin, GuardrailInput, GuardrailOutput, PatternRule } from '../types.js'
 import { BUILT_IN_RULES } from './rules.js'
+
+function simpleHash(str: string): string {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i)
+    hash |= 0
+  }
+  return Math.abs(hash).toString(36).padStart(8, '0')
+}
 
 export class PatternGuardrail implements GuardrailPlugin {
   readonly id = 'pattern'
@@ -17,46 +26,48 @@ export class PatternGuardrail implements GuardrailPlugin {
     }))
   }
 
-  async screen(query: string, _context: GuardrailContext): Promise<ScreeningResult> {
-    const start = Date.now()
-    const detectedCategories: string[] = []
-    let sanitised = query
-    let shouldBlock = false
-    let blockMessage: string | undefined
+  async process(input: GuardrailInput): Promise<GuardrailOutput> {
+    let query = input.query
+    const annotations: string[] = []
 
     for (const { rule, regex } of this.compiledRules) {
       regex.lastIndex = 0
-      const matches = query.match(regex)
+      const matches = input.query.match(regex)
 
       if (matches && matches.length > 0) {
-        if (!detectedCategories.includes(rule.category)) {
-          detectedCategories.push(rule.category)
-        }
-
         if (rule.action === 'block') {
-          shouldBlock = true
-          blockMessage = `This query was blocked because it contains ${rule.category} (${rule.name}). Please remove sensitive information and try again.`
-          break
+          return {
+            action: 'block',
+            reason: rule.replacement || `This query was blocked because it contains ${rule.category} (${rule.name}). Please remove sensitive information and try again.`,
+            annotations: [...annotations, `blocked:${rule.name}`],
+          }
         }
 
-        if (rule.action === 'redact') {
-          const freshRegex = new RegExp(rule.pattern, rule.flags || 'g')
-          sanitised = sanitised.replace(freshRegex, `[REDACTED:${rule.category}]`)
+        const freshRegex = new RegExp(rule.pattern, rule.flags || 'g')
+
+        if (rule.action === 'mask') {
+          const placeholder = rule.replacement || `[${rule.category.toUpperCase()}]`
+          query = query.replace(freshRegex, placeholder)
+          annotations.push(`masked:${rule.name}`)
+        }
+
+        if (rule.action === 'hash') {
+          query = query.replace(freshRegex, (match) => `[hash:${simpleHash(match)}]`)
+          annotations.push(`hashed:${rule.name}`)
+        }
+
+        if (rule.action === 'remove') {
+          query = query.replace(freshRegex, '')
+          annotations.push(`removed:${rule.name}`)
         }
       }
     }
 
-    const durationMs = Date.now() - start
-
-    if (shouldBlock) {
-      return { action: 'block', source: this.id, detectedCategories, confidence: 1, message: blockMessage, durationMs }
+    if (query !== input.query) {
+      return { action: 'continue', query, annotations }
     }
 
-    if (sanitised !== query) {
-      return { action: 'redact', source: this.id, detectedCategories, confidence: 1, sanitisedQuery: sanitised, durationMs }
-    }
-
-    return { action: 'pass', source: this.id, detectedCategories: [], confidence: 1, durationMs }
+    return { action: 'continue', annotations }
   }
 }
 

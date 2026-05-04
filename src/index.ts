@@ -5,6 +5,7 @@ export type {
   GuardrailOutput,
   GuardrailStage,
   GuardrailContext,
+  ConfigField,
   PatternRule,
   PatternAction,
 } from './types.js'
@@ -17,8 +18,5 @@ export { PatternGuardrail, patternGuardrail } from './pattern/index.js'
 export { LlmGuardrail } from './llm/index.js'
 export { BUILT_IN_RULES } from './pattern/rules.js'
 
-// Auto-register built-in plugins
-import { registry } from './registry.js'
-import { patternGuardrail } from './pattern/index.js'
-
-registry.register(patternGuardrail)
+// Plugins are NOT auto-registered. The host system decides which
+// guardrails are active per workspace. Import and register explicitly.

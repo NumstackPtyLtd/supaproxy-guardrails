@@ -32,7 +32,16 @@ export class LlmGuardrail implements GuardrailPlugin {
   readonly id = 'llm'
   readonly name = 'LLM Guard'
   readonly description = 'AI-powered content screening using any OpenAI-compatible endpoint. Point at Ollama, Azure, or a private model.'
+  readonly version = '0.2.0'
+  readonly author = 'SupaProxy'
   readonly stage = 'pre-llm' as const
+  readonly configSchema = {
+    fields: [
+      { name: 'endpoint', label: 'Endpoint URL', type: 'text' as const, required: true, placeholder: 'http://localhost:11434', helpText: 'OpenAI-compatible API endpoint.' },
+      { name: 'apiKey', label: 'API key', type: 'password' as const, required: true, placeholder: 'sk-...', helpText: 'API key for the endpoint.' },
+      { name: 'model', label: 'Model', type: 'text' as const, required: true, placeholder: 'llama3', helpText: 'Model to use for screening.' },
+    ],
+  }
 
   private config: LlmGuardrailConfig
 

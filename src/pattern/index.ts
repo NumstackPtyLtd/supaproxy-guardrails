@@ -14,7 +14,17 @@ export class PatternGuardrail implements GuardrailPlugin {
   readonly id = 'pattern'
   readonly name = 'Pattern Guard'
   readonly description = 'Regex and token matching for PII, credentials, and custom patterns. No external calls.'
+  readonly version = '0.2.0'
+  readonly author = 'SupaProxy'
   readonly stage = 'pre-llm' as const
+  readonly configSchema = {
+    fields: [
+      { name: 'enablePii', label: 'Detect PII', type: 'toggle' as const, helpText: 'Mask ID numbers, phone numbers, and similar personal data.', defaultValue: true },
+      { name: 'enableCredentials', label: 'Detect credentials', type: 'toggle' as const, helpText: 'Block API keys, AWS keys, and private keys.', defaultValue: true },
+      { name: 'emailAction', label: 'Email handling', type: 'select' as const, helpText: 'What to do when an email address is detected.', options: [{ value: 'hash', label: 'Hash (consistent, reversible)' }, { value: 'mask', label: 'Mask (replace with placeholder)' }, { value: 'remove', label: 'Remove entirely' }, { value: 'block', label: 'Block the query' }], defaultValue: 'hash' },
+      { name: 'customPatterns', label: 'Custom patterns', type: 'textarea' as const, helpText: 'One pattern per line. Format: name|category|regex|action. Example: project_name|ip|Project Falcon|mask', placeholder: 'project_name|ip|Project Falcon|mask' },
+    ],
+  }
 
   private readonly compiledRules: Array<{ rule: PatternRule; regex: RegExp }>
 

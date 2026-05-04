@@ -48,11 +48,31 @@ export interface GuardrailContext {
  * Zero infrastructure dependencies. Pure logic. The server provides
  * logging, storage, and event emission.
  */
+/**
+ * Configuration field that the dashboard renders as a form input.
+ * The package declares what config it needs. The dashboard renders it.
+ */
+export interface ConfigField {
+  name: string
+  label: string
+  type: 'text' | 'password' | 'select' | 'toggle' | 'textarea' | 'number'
+  required?: boolean
+  placeholder?: string
+  helpText?: string
+  options?: Array<{ value: string; label: string }>
+  defaultValue?: string | boolean | number
+}
+
 export interface GuardrailPlugin {
   readonly id: string
   readonly name: string
   readonly description: string
+  readonly version: string
+  readonly author: string
   readonly stage: GuardrailStage
+
+  /** Config schema for the dashboard settings UI. */
+  readonly configSchema: { fields: ConfigField[] }
 
   process(input: GuardrailInput): Promise<GuardrailOutput>
 }

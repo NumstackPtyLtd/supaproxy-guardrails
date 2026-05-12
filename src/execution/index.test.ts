@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { WriteGuardRail, ExecutionRailRegistry } from './index.js'
 import type { ExecutionRailPlugin, ToolCallContext, ExecutionRailResult, ExecutionRailEvent } from './index.js'
 
+const stubMeta = { description: 'Test', version: '0.0.1', author: 'test', stage: 'execution' as const, configSchema: { fields: [] } }
+
 describe('WriteGuardRail', () => {
   const rail = new WriteGuardRail()
 
@@ -129,16 +131,14 @@ describe('ExecutionRailRegistry', () => {
   it('stops at first blocking plugin', async () => {
     const calls: string[] = []
     const blocker: ExecutionRailPlugin = {
-      id: 'blocker',
-      name: 'Blocker',
+      id: 'blocker', name: 'Blocker', ...stubMeta,
       async validateToolCall() {
         calls.push('blocker')
         return { allowed: false, reason: 'blocked' }
       },
     }
     const passthrough: ExecutionRailPlugin = {
-      id: 'pass',
-      name: 'Pass',
+      id: 'pass', name: 'Pass', ...stubMeta,
       async validateToolCall() {
         calls.push('pass')
         return { allowed: true }
@@ -163,11 +163,11 @@ describe('ExecutionRailRegistry', () => {
 
   it('allows when all plugins pass', async () => {
     const pass1: ExecutionRailPlugin = {
-      id: 'p1', name: 'P1',
+      id: 'p1', name: 'P1', ...stubMeta,
       async validateToolCall() { return { allowed: true } },
     }
     const pass2: ExecutionRailPlugin = {
-      id: 'p2', name: 'P2',
+      id: 'p2', name: 'P2', ...stubMeta,
       async validateToolCall() { return { allowed: true } },
     }
 
@@ -208,7 +208,7 @@ describe('ExecutionRailRegistry', () => {
   it('emits events for each plugin until one blocks', async () => {
     const events: ExecutionRailEvent[] = []
     const pass: ExecutionRailPlugin = {
-      id: 'pass', name: 'Pass',
+      id: 'pass', name: 'Pass', ...stubMeta,
       async validateToolCall() { return { allowed: true } },
     }
     const reg = new ExecutionRailRegistry()

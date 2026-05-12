@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-05-12
+
+### Added
+- `description`, `version`, `author`, `stage`, and `configSchema` fields on `ExecutionRailPlugin` and `RetrievalRailPlugin` interfaces
+- `GuardrailStage` now includes `'execution'` and `'retrieval'` alongside `'pre-llm'` and `'post-llm'`
+- `WriteGuardRail` and `InjectionSanitiser` expose `configSchema` for dashboard rendering
+- All three rail types (pipeline, execution, retrieval) now share a uniform metadata shape for the dashboard to render config forms
+
+### Changed
+- `ExecutionRailPlugin` and `RetrievalRailPlugin` interfaces now require `description`, `version`, `author`, `stage`, and `configSchema` fields
+
 ## [0.3.0] - 2026-05-12
 
 ### Added

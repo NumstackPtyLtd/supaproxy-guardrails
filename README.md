@@ -214,6 +214,10 @@ export { BUILT_IN_RULES }
 
 `patternGuardrail` is a pre-built instance with default built-in rules.
 
+## Documentation
+
+Full documentation at [docs.supaproxy.cloud](https://docs.supaproxy.cloud/plugins/guardrails).
+
 ## Licence
 
 MIT

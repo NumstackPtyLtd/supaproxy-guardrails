@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { WriteGuardRail, ExecutionRailRegistry } from './index.js'
-import type { ExecutionRailPlugin, ToolCallContext, ExecutionRailResult } from './index.js'
+import type { ExecutionRailPlugin, ToolCallContext, ExecutionRailResult, ExecutionRailEvent } from './index.js'
 
 describe('WriteGuardRail', () => {
   const rail = new WriteGuardRail()
@@ -176,5 +176,52 @@ describe('ExecutionRailRegistry', () => {
     reg.register(pass2)
     const result = await reg.validate(readCtx)
     expect(result.allowed).toBe(true)
+  })
+
+  it('emits event when tool call is blocked', async () => {
+    const events: ExecutionRailEvent[] = []
+    const reg = new ExecutionRailRegistry()
+    reg.register(new WriteGuardRail())
+    reg.on((e) => events.push(e))
+
+    await reg.validate(writeCtx)
+
+    expect(events).toHaveLength(1)
+    expect(events[0].pluginId).toBe('write-guard')
+    expect(events[0].result.allowed).toBe(false)
+    expect(events[0].ctx.toolName).toBe('delete_account')
+    expect(events[0].ctx.workspaceId).toBe('ws-1')
+  })
+
+  it('emits event when tool call is allowed', async () => {
+    const events: ExecutionRailEvent[] = []
+    const reg = new ExecutionRailRegistry()
+    reg.register(new WriteGuardRail())
+    reg.on((e) => events.push(e))
+
+    await reg.validate(readCtx)
+
+    expect(events).toHaveLength(1)
+    expect(events[0].result.allowed).toBe(true)
+  })
+
+  it('emits events for each plugin until one blocks', async () => {
+    const events: ExecutionRailEvent[] = []
+    const pass: ExecutionRailPlugin = {
+      id: 'pass', name: 'Pass',
+      async validateToolCall() { return { allowed: true } },
+    }
+    const reg = new ExecutionRailRegistry()
+    reg.register(pass)
+    reg.register(new WriteGuardRail())
+    reg.on((e) => events.push(e))
+
+    await reg.validate(writeCtx)
+
+    expect(events).toHaveLength(2)
+    expect(events[0].pluginId).toBe('pass')
+    expect(events[0].result.allowed).toBe(true)
+    expect(events[1].pluginId).toBe('write-guard')
+    expect(events[1].result.allowed).toBe(false)
   })
 })

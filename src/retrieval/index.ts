@@ -43,17 +43,33 @@ export interface RetrievalRailPlugin {
   sanitise(content: string): Promise<SanitiseResult> | SanitiseResult
 }
 
+export interface RetrievalRailEvent {
+  pluginId: string
+  originalContent: string
+  result: SanitiseResult
+}
+
+export type RetrievalRailListener = (event: RetrievalRailEvent) => void
+
 /**
  * Registry for retrieval rail plugins.
  *
  * Runs all registered plugins in sequence. Each plugin receives
  * the output of the previous one. Stripped items accumulate.
+ *
+ * Emits events after each plugin runs so the host system can
+ * log injection attempts, update audit trails, and trigger alerts.
  */
 export class RetrievalRailRegistry {
   private readonly plugins: RetrievalRailPlugin[] = []
+  private readonly listeners: RetrievalRailListener[] = []
 
   register(plugin: RetrievalRailPlugin): void {
     this.plugins.push(plugin)
+  }
+
+  on(listener: RetrievalRailListener): void {
+    this.listeners.push(listener)
   }
 
   list(): RetrievalRailPlugin[] {
@@ -66,11 +82,20 @@ export class RetrievalRailRegistry {
 
     for (const plugin of this.plugins) {
       const result = await plugin.sanitise(current)
+      if (result.stripped.length > 0) {
+        this.emit({ pluginId: plugin.id, originalContent: content, result })
+      }
       current = result.content
       allStripped.push(...result.stripped)
     }
 
     return { content: current, stripped: allStripped }
+  }
+
+  private emit(event: RetrievalRailEvent): void {
+    for (const listener of this.listeners) {
+      listener(event)
+    }
   }
 }
 

@@ -25,17 +25,34 @@ export interface ExecutionRailPlugin {
   validateToolCall(ctx: ToolCallContext): Promise<ExecutionRailResult>
 }
 
+export interface ExecutionRailEvent {
+  pluginId: string
+  ctx: ToolCallContext
+  result: ExecutionRailResult
+}
+
+export type ExecutionRailListener = (event: ExecutionRailEvent) => void
+
 /**
  * Registry for execution rail plugins.
  *
  * Runs all registered plugins in order. If any plugin blocks
  * the tool call, execution stops and the reason is returned.
+ *
+ * Emits events on every validation (allowed or blocked) so the
+ * host system can log, audit, and rate-limit without the library
+ * needing infrastructure dependencies.
  */
 export class ExecutionRailRegistry {
   private readonly plugins: ExecutionRailPlugin[] = []
+  private readonly listeners: ExecutionRailListener[] = []
 
   register(plugin: ExecutionRailPlugin): void {
     this.plugins.push(plugin)
+  }
+
+  on(listener: ExecutionRailListener): void {
+    this.listeners.push(listener)
   }
 
   list(): ExecutionRailPlugin[] {
@@ -45,9 +62,16 @@ export class ExecutionRailRegistry {
   async validate(ctx: ToolCallContext): Promise<ExecutionRailResult> {
     for (const plugin of this.plugins) {
       const result = await plugin.validateToolCall(ctx)
+      this.emit({ pluginId: plugin.id, ctx, result })
       if (!result.allowed) return result
     }
     return { allowed: true }
+  }
+
+  private emit(event: ExecutionRailEvent): void {
+    for (const listener of this.listeners) {
+      listener(event)
+    }
   }
 }
 

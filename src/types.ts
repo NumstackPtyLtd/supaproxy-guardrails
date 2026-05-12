@@ -1,4 +1,4 @@
-export type GuardrailStage = 'pre-llm' | 'post-llm'
+export type GuardrailStage = 'pre-llm' | 'post-llm' | 'execution' | 'retrieval'
 
 /**
  * What the guardrail receives.

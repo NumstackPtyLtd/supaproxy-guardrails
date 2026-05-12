@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { sanitiseToolOutput, RetrievalRailRegistry, InjectionSanitiser } from './index.js'
 import type { RetrievalRailPlugin, RetrievalRailEvent } from './index.js'
 
+const stubMeta = { description: 'Test', version: '0.0.1', author: 'test', stage: 'retrieval' as const, configSchema: { fields: [] } }
+
 describe('sanitiseToolOutput', () => {
   it('returns content unchanged when no injection detected', () => {
     const result = sanitiseToolOutput('The claim CLM-123 was filed on 2024-01-15.')
@@ -143,13 +145,13 @@ describe('RetrievalRailRegistry', () => {
 
   it('chains multiple plugins in sequence', async () => {
     const uppercaser: RetrievalRailPlugin = {
-      id: 'upper', name: 'Uppercaser',
+      id: 'upper', name: 'Uppercaser', ...stubMeta,
       sanitise(content: string) {
         return { content: content.toUpperCase(), stripped: ['uppercased'] }
       },
     }
     const trimmer: RetrievalRailPlugin = {
-      id: 'trim', name: 'Trimmer',
+      id: 'trim', name: 'Trimmer', ...stubMeta,
       sanitise(content: string) {
         return { content: content.trim(), stripped: ['trimmed'] }
       },
@@ -165,13 +167,13 @@ describe('RetrievalRailRegistry', () => {
 
   it('accumulates stripped items across plugins', async () => {
     const plugin1: RetrievalRailPlugin = {
-      id: 'p1', name: 'P1',
+      id: 'p1', name: 'P1', ...stubMeta,
       sanitise(content: string) {
         return { content, stripped: ['from-p1'] }
       },
     }
     const plugin2: RetrievalRailPlugin = {
-      id: 'p2', name: 'P2',
+      id: 'p2', name: 'P2', ...stubMeta,
       sanitise(content: string) {
         return { content, stripped: ['from-p2'] }
       },

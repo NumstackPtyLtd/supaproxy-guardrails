@@ -22,6 +22,11 @@ export interface ExecutionRailResult {
 export interface ExecutionRailPlugin {
   readonly id: string
   readonly name: string
+  readonly description: string
+  readonly version: string
+  readonly author: string
+  readonly stage: 'execution'
+  readonly configSchema: { fields: import('../types.js').ConfigField[] }
   validateToolCall(ctx: ToolCallContext): Promise<ExecutionRailResult>
 }
 
@@ -82,6 +87,15 @@ export class ExecutionRailRegistry {
 export class WriteGuardRail implements ExecutionRailPlugin {
   readonly id = 'write-guard'
   readonly name = 'Write operation guard'
+  readonly description = 'Blocks write tool calls when the user query does not express write intent. Prevents the AI from being tricked into destructive operations via indirect injection.'
+  readonly version = '0.3.0'
+  readonly author = 'SupaProxy'
+  readonly stage = 'execution' as const
+  readonly configSchema = {
+    fields: [
+      { name: 'enabled', label: 'Enable write guard', type: 'toggle' as const, helpText: 'Block write tools when the query is informational.', defaultValue: true },
+    ],
+  }
 
   private readonly WRITE_INTENT_PATTERNS = [
     /\b(create|add|new|file|submit|register|open|start)\b/i,

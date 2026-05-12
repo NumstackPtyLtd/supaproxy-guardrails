@@ -40,6 +40,11 @@ export interface SanitiseResult {
 export interface RetrievalRailPlugin {
   readonly id: string
   readonly name: string
+  readonly description: string
+  readonly version: string
+  readonly author: string
+  readonly stage: 'retrieval'
+  readonly configSchema: { fields: import('../types.js').ConfigField[] }
   sanitise(content: string): Promise<SanitiseResult> | SanitiseResult
 }
 
@@ -106,6 +111,16 @@ export class RetrievalRailRegistry {
 export class InjectionSanitiser implements RetrievalRailPlugin {
   readonly id = 'injection-sanitiser'
   readonly name = 'Injection sanitiser'
+  readonly description = 'Strips known prompt injection phrases and hidden HTML payloads from MCP tool output before feeding back to the LLM.'
+  readonly version = '0.3.0'
+  readonly author = 'SupaProxy'
+  readonly stage = 'retrieval' as const
+  readonly configSchema = {
+    fields: [
+      { name: 'enabled', label: 'Enable injection sanitiser', type: 'toggle' as const, helpText: 'Strip injection attempts from tool output.', defaultValue: true },
+      { name: 'stripHtml', label: 'Strip hidden HTML', type: 'toggle' as const, helpText: 'Remove display:none divs, font-size:0 spans, and HTML comments containing injection.', defaultValue: true },
+    ],
+  }
 
   sanitise(content: string): SanitiseResult {
     return sanitiseToolOutput(content)

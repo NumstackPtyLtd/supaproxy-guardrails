@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2026-05-14
+
+### Added
+- `executionCatalogue` and `retrievalCatalogue` global singletons for plugin discovery
+- `PluginSource` type (`'core' | 'marketplace'`) and `source` field on all plugin interfaces
+- `icon` field on all plugin interfaces (URL to SVG/PNG)
+- `deregister(id)` method on all registries and catalogues
+- Namespaced plugin IDs (`@scope/package:short-id` format)
+- Built-in plugins auto-register into catalogues at import time
+
 ## [0.5.0] - 2026-05-14
 
 ### Added

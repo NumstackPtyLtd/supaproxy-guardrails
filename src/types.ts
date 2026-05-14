@@ -96,6 +96,9 @@ export interface GuardrailPlugin {
   readonly stage: GuardrailStage
   readonly source?: PluginSource
 
+  /** URL to the plugin icon (SVG or PNG). Rendered in the dashboard and marketplace. */
+  readonly icon?: string
+
   /** Config schema for the dashboard settings UI. */
   readonly configSchema: { fields: ConfigField[] }
 

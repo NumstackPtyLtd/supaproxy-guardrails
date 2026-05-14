@@ -46,6 +46,7 @@ export interface RetrievalRailPlugin {
   readonly author: string
   readonly stage: 'retrieval'
   readonly source?: import('../types.js').PluginSource
+  readonly icon?: string
   readonly configSchema: { fields: import('../types.js').ConfigField[] }
   readonly eventDisplay: import('../types.js').DisplayField[]
   readonly eventActions: import('../types.js').EventAction[]

@@ -28,6 +28,7 @@ export interface ExecutionRailPlugin {
   readonly author: string
   readonly stage: 'execution'
   readonly source?: import('../types.js').PluginSource
+  readonly icon?: string
   readonly configSchema: { fields: import('../types.js').ConfigField[] }
   readonly eventDisplay: import('../types.js').DisplayField[]
   readonly eventActions: import('../types.js').EventAction[]

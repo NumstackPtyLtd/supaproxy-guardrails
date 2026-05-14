@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2026-05-14
+
+### Added
+- `eventDisplay` field on `ExecutionRailPlugin` and `RetrievalRailPlugin` interfaces: plugins declare how their events render in the dashboard sidebar
+- `eventActions` field on both interfaces: plugins declare which platform actions (flag, dismiss, block_connection) are available
+- `DisplayField`, `DisplayFormat`, `EventAction`, `EventActionType` types exported from package
+- `ExecutionRailResult.pluginId` returned on block so the server can look up the plugin
+- `SanitiseResult.pluginId` returned when content is stripped
+- `WriteGuardRail` declares its display (tool, args, connection, query, reason) and actions (flag, dismiss, block_connection)
+- `InjectionSanitiser` declares its display (tool, connection, query, original output, stripped content) and actions (flag, dismiss)
+
+### Breaking
+- `ExecutionRailPlugin` interface now requires `eventDisplay` and `eventActions` fields
+- `RetrievalRailPlugin` interface now requires `eventDisplay` and `eventActions` fields
+
 ## [0.4.0] - 2026-05-12
 
 ### Added

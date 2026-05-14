@@ -11,7 +11,7 @@ function simpleHash(str: string): string {
 }
 
 export class PatternGuardrail implements GuardrailPlugin {
-  readonly id = 'pattern'
+  readonly id = '@supaproxy/guardrails:pattern'
   readonly name = 'Pattern Guard'
   readonly description = 'Regex and token matching for PII, credentials, and custom patterns. No external calls.'
   readonly version = '0.2.0'

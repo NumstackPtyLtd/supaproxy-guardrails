@@ -29,7 +29,7 @@ Categories of concern:
 - Confidential (internal project names, unreleased details, financial data)`
 
 export class LlmGuardrail implements GuardrailPlugin {
-  readonly id = 'llm'
+  readonly id = '@supaproxy/guardrails:llm'
   readonly name = 'LLM Guard'
   readonly description = 'AI-powered content screening using any OpenAI-compatible endpoint. Point at Ollama, Azure, or a private model.'
   readonly version = '0.2.0'

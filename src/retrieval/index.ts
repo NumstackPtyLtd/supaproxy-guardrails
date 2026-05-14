@@ -115,7 +115,7 @@ export class RetrievalRailRegistry {
  * HTML payloads from MCP tool responses.
  */
 export class InjectionSanitiser implements RetrievalRailPlugin {
-  readonly id = 'injection-sanitiser'
+  readonly id = '@supaproxy/guardrails:injection-sanitiser'
   readonly name = 'Injection sanitiser'
   readonly description = 'Strips known prompt injection phrases and hidden HTML payloads from MCP tool output before feeding back to the LLM.'
   readonly version = '0.3.0'

@@ -17,6 +17,7 @@ export interface ToolCallContext {
 export interface ExecutionRailResult {
   allowed: boolean
   reason?: string
+  pluginId?: string
 }
 
 export interface ExecutionRailPlugin {
@@ -27,6 +28,8 @@ export interface ExecutionRailPlugin {
   readonly author: string
   readonly stage: 'execution'
   readonly configSchema: { fields: import('../types.js').ConfigField[] }
+  readonly eventDisplay: import('../types.js').DisplayField[]
+  readonly eventActions: import('../types.js').EventAction[]
   validateToolCall(ctx: ToolCallContext): Promise<ExecutionRailResult>
 }
 
@@ -68,7 +71,7 @@ export class ExecutionRailRegistry {
     for (const plugin of this.plugins) {
       const result = await plugin.validateToolCall(ctx)
       this.emit({ pluginId: plugin.id, ctx, result })
-      if (!result.allowed) return result
+      if (!result.allowed) return { ...result, pluginId: plugin.id }
     }
     return { allowed: true }
   }
@@ -96,6 +99,18 @@ export class WriteGuardRail implements ExecutionRailPlugin {
       { name: 'enabled', label: 'Enable write guard', type: 'toggle' as const, helpText: 'Block write tools when the query is informational.', defaultValue: true },
     ],
   }
+  readonly eventDisplay: import('../types.js').DisplayField[] = [
+    { source: 'context', key: 'tool_name', label: 'Tool', format: 'text' },
+    { source: 'context', key: 'tool_args', label: 'Tool arguments', format: 'code' },
+    { source: 'context', key: 'connection_name', label: 'Connection', format: 'text' },
+    { source: 'context', key: 'original_query', label: 'User query', format: 'text' },
+    { source: 'outcome', key: 'reason', label: 'Reason', format: 'warning' },
+  ]
+  readonly eventActions: import('../types.js').EventAction[] = [
+    { type: 'flag', label: 'Flag for review' },
+    { type: 'dismiss', label: 'Dismiss' },
+    { type: 'block_connection', label: 'Block connection' },
+  ]
 
   private readonly WRITE_INTENT_PATTERNS = [
     /\b(create|add|new|file|submit|register|open|start)\b/i,

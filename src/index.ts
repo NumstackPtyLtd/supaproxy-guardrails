@@ -8,6 +8,10 @@ export type {
   ConfigField,
   PatternRule,
   PatternAction,
+  DisplayFormat,
+  DisplayField,
+  EventActionType,
+  EventAction,
 } from './types.js'
 
 // Registry (pre/post-LLM pipeline)

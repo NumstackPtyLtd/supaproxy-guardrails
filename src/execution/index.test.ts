@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { WriteGuardRail, ExecutionRailRegistry } from './index.js'
 import type { ExecutionRailPlugin, ToolCallContext, ExecutionRailResult, ExecutionRailEvent } from './index.js'
 
-const stubMeta = { description: 'Test', version: '0.0.1', author: 'test', stage: 'execution' as const, configSchema: { fields: [] } }
+const stubMeta = { description: 'Test', version: '0.0.1', author: 'test', stage: 'execution' as const, configSchema: { fields: [] }, eventDisplay: [], eventActions: [] }
 
 describe('WriteGuardRail', () => {
   const rail = new WriteGuardRail()

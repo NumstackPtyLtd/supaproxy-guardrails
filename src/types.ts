@@ -63,6 +63,29 @@ export interface ConfigField {
   defaultValue?: string | boolean | number
 }
 
+/**
+ * Event display and action types.
+ *
+ * Guardrail plugins declare how their events render in the dashboard
+ * and what platform actions are available. The server passes these
+ * through to the frontend without interpretation.
+ */
+export type DisplayFormat = 'text' | 'code' | 'pre' | 'danger' | 'warning' | 'badge'
+
+export interface DisplayField {
+  source: 'context' | 'outcome'
+  key: string
+  label: string
+  format: DisplayFormat
+}
+
+export type EventActionType = 'flag' | 'dismiss' | 'block_connection'
+
+export interface EventAction {
+  type: EventActionType
+  label: string
+}
+
 export interface GuardrailPlugin {
   readonly id: string
   readonly name: string

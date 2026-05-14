@@ -28,6 +28,7 @@ const HIDDEN_INJECTION_PATTERNS = [
 export interface SanitiseResult {
   content: string
   stripped: string[]
+  pluginId?: string
 }
 
 /**
@@ -45,6 +46,8 @@ export interface RetrievalRailPlugin {
   readonly author: string
   readonly stage: 'retrieval'
   readonly configSchema: { fields: import('../types.js').ConfigField[] }
+  readonly eventDisplay: import('../types.js').DisplayField[]
+  readonly eventActions: import('../types.js').EventAction[]
   sanitise(content: string): Promise<SanitiseResult> | SanitiseResult
 }
 
@@ -84,17 +87,19 @@ export class RetrievalRailRegistry {
   async sanitise(content: string): Promise<SanitiseResult> {
     let current = content
     const allStripped: string[] = []
+    let lastStrippingPluginId: string | undefined
 
     for (const plugin of this.plugins) {
       const result = await plugin.sanitise(current)
       if (result.stripped.length > 0) {
         this.emit({ pluginId: plugin.id, originalContent: content, result })
+        lastStrippingPluginId = plugin.id
       }
       current = result.content
       allStripped.push(...result.stripped)
     }
 
-    return { content: current, stripped: allStripped }
+    return { content: current, stripped: allStripped, pluginId: lastStrippingPluginId }
   }
 
   private emit(event: RetrievalRailEvent): void {
@@ -121,6 +126,17 @@ export class InjectionSanitiser implements RetrievalRailPlugin {
       { name: 'stripHtml', label: 'Strip hidden HTML', type: 'toggle' as const, helpText: 'Remove display:none divs, font-size:0 spans, and HTML comments containing injection.', defaultValue: true },
     ],
   }
+  readonly eventDisplay: import('../types.js').DisplayField[] = [
+    { source: 'context', key: 'tool_name', label: 'Tool', format: 'text' },
+    { source: 'context', key: 'connection_name', label: 'Connection', format: 'text' },
+    { source: 'context', key: 'original_query', label: 'User query', format: 'text' },
+    { source: 'outcome', key: 'original_content', label: 'Original output', format: 'pre' },
+    { source: 'outcome', key: 'stripped_content', label: 'Stripped content', format: 'danger' },
+  ]
+  readonly eventActions: import('../types.js').EventAction[] = [
+    { type: 'flag', label: 'Flag for review' },
+    { type: 'dismiss', label: 'Dismiss' },
+  ]
 
   sanitise(content: string): SanitiseResult {
     return sanitiseToolOutput(content)

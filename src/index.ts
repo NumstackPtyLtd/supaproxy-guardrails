@@ -12,6 +12,7 @@ export type {
   DisplayField,
   EventActionType,
   EventAction,
+  PluginSource,
 } from './types.js'
 
 // Registry (pre/post-LLM pipeline)

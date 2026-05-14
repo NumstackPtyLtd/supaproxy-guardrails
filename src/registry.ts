@@ -7,6 +7,10 @@ class GuardrailRegistry {
     this.plugins.set(plugin.id, plugin)
   }
 
+  deregister(id: string): boolean {
+    return this.plugins.delete(id)
+  }
+
   get(id: string): GuardrailPlugin {
     const plugin = this.plugins.get(id)
     if (!plugin) throw new Error(`Guardrail plugin not found: ${id}`)

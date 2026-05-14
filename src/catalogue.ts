@@ -19,6 +19,10 @@ class PluginCatalogue<T extends { id: string; stage: string }> {
     this.plugins.set(plugin.id, plugin)
   }
 
+  deregister(id: string): boolean {
+    return this.plugins.delete(id)
+  }
+
   get(id: string): T | undefined {
     return this.plugins.get(id)
   }

@@ -1,4 +1,5 @@
 export type GuardrailStage = 'pre-llm' | 'post-llm' | 'execution' | 'retrieval'
+export type PluginSource = 'core' | 'marketplace'
 
 /**
  * What the guardrail receives.
@@ -93,6 +94,7 @@ export interface GuardrailPlugin {
   readonly version: string
   readonly author: string
   readonly stage: GuardrailStage
+  readonly source?: PluginSource
 
   /** Config schema for the dashboard settings UI. */
   readonly configSchema: { fields: ConfigField[] }

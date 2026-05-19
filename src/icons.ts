@@ -1,9 +1,9 @@
-/** Icon paths served via the server's guardrail icon route. */
+/** Icon paths served via the plugin icon API route. */
 
-export const PATTERN_GUARD_ICON = '/api/guardrails/pattern-guard/icon'
+export const PATTERN_GUARD_ICON = '/api/plugins/pattern-guard/icon?v=0.7.4'
 
-export const INJECTION_SANITISER_ICON = '/api/guardrails/injection-sanitiser/icon'
+export const INJECTION_SANITISER_ICON = '/api/plugins/injection-sanitiser/icon?v=0.7.4'
 
-export const WRITE_GUARD_ICON = '/api/guardrails/write-guard/icon'
+export const WRITE_GUARD_ICON = '/api/plugins/write-guard/icon?v=0.7.4'
 
-export const PII_FILTER_ICON = '/api/guardrails/pii-filter/icon'
+export const PII_FILTER_ICON = '/api/plugins/pii-filter/icon?v=0.1.0'

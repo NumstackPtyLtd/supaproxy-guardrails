@@ -16,7 +16,7 @@ export type {
 } from './types.js'
 
 // Registry (pre/post-LLM pipeline)
-export { registry } from './registry.js'
+export { GuardrailRegistry, registry } from './registry.js'
 
 // Catalogues (global discovery for all rail types)
 export { executionCatalogue, retrievalCatalogue } from './catalogue.js'

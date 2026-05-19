@@ -1,6 +1,6 @@
 import type { GuardrailPlugin, GuardrailStage } from './types.js'
 
-class GuardrailRegistry {
+export class GuardrailRegistry {
   private readonly plugins = new Map<string, GuardrailPlugin>()
 
   register(plugin: GuardrailPlugin): void {

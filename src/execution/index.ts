@@ -90,7 +90,7 @@ export class ExecutionRailRegistry {
  * query doesn't suggest a write intent.
  */
 export class WriteGuardRail implements ExecutionRailPlugin {
-  readonly id = '@supaproxy/guardrails:write-guard'
+  readonly id = 'write-guard'
   readonly name = 'Write operation guard'
   readonly description = 'Blocks write tool calls when the user query does not express write intent. Prevents the AI from being tricked into destructive operations via indirect injection.'
   readonly version = '0.3.0'

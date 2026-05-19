@@ -216,7 +216,7 @@ describe('PatternGuardrail', () => {
   describe('plugin contract', () => {
     it('has correct plugin metadata', () => {
       const guard = new PatternGuardrail()
-      expect(guard.id).toBe('@supaproxy/guardrails:pattern')
+      expect(guard.id).toBe('pattern-guard')
       expect(guard.name).toBe('Pattern Guard')
       expect(guard.stage).toBe('pre-llm')
       expect(guard.version).toBeDefined()
@@ -226,7 +226,7 @@ describe('PatternGuardrail', () => {
 
     it('exported singleton is a PatternGuardrail', () => {
       expect(patternGuardrail).toBeInstanceOf(PatternGuardrail)
-      expect(patternGuardrail.id).toBe('@supaproxy/guardrails:pattern')
+      expect(patternGuardrail.id).toBe('pattern-guard')
     })
   })
 
@@ -269,7 +269,7 @@ describe('BUILT_IN_RULES', () => {
 describe('LlmGuardrail', () => {
   it('has correct plugin metadata', () => {
     const guard = new LlmGuardrail({ endpoint: 'http://localhost:11434', apiKey: 'test', model: 'llama3' })
-    expect(guard.id).toBe('@supaproxy/guardrails:llm')
+    expect(guard.id).toBe('llm-guard')
     expect(guard.name).toBe('LLM Guard')
     expect(guard.stage).toBe('pre-llm')
     expect(guard.version).toBeDefined()

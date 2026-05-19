@@ -1,6 +1,6 @@
 {
   "name": "@supaproxy/guardrails",
-  "version": "0.6.0",
+  "version": "0.7.3",
   "description": "Input and output guardrail plugins for SupaProxy",
   "type": "module",
   "main": "dist/index.js",

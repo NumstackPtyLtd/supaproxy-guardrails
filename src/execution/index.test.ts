@@ -158,7 +158,7 @@ describe('ExecutionRailRegistry', () => {
     const rail = new WriteGuardRail()
     reg.register(rail)
     expect(reg.list()).toHaveLength(1)
-    expect(reg.list()[0].id).toBe('@supaproxy/guardrails:write-guard')
+    expect(reg.list()[0].id).toBe('write-guard')
   })
 
   it('allows when all plugins pass', async () => {
@@ -187,7 +187,7 @@ describe('ExecutionRailRegistry', () => {
     await reg.validate(writeCtx)
 
     expect(events).toHaveLength(1)
-    expect(events[0].pluginId).toBe('@supaproxy/guardrails:write-guard')
+    expect(events[0].pluginId).toBe('write-guard')
     expect(events[0].result.allowed).toBe(false)
     expect(events[0].ctx.toolName).toBe('delete_account')
     expect(events[0].ctx.workspaceId).toBe('ws-1')
@@ -221,7 +221,7 @@ describe('ExecutionRailRegistry', () => {
     expect(events).toHaveLength(2)
     expect(events[0].pluginId).toBe('pass')
     expect(events[0].result.allowed).toBe(true)
-    expect(events[1].pluginId).toBe('@supaproxy/guardrails:write-guard')
+    expect(events[1].pluginId).toBe('write-guard')
     expect(events[1].result.allowed).toBe(false)
   })
 })

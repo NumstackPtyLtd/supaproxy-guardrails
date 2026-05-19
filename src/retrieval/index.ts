@@ -5,6 +5,7 @@
  * documents, APIs), that content could contain indirect injection
  * payloads. This rail strips them.
  */
+import { INJECTION_SANITISER_ICON } from '../icons.js'
 
 const INJECTION_PATTERNS_IN_CONTENT = [
   /ignore\s+(all\s+)?previous\s+instructions/gi,
@@ -116,11 +117,12 @@ export class RetrievalRailRegistry {
  * HTML payloads from MCP tool responses.
  */
 export class InjectionSanitiser implements RetrievalRailPlugin {
-  readonly id = '@supaproxy/guardrails:injection-sanitiser'
+  readonly id = 'injection-sanitiser'
   readonly name = 'Injection sanitiser'
   readonly description = 'Strips known prompt injection phrases and hidden HTML payloads from MCP tool output before feeding back to the LLM.'
   readonly version = '0.3.0'
   readonly author = 'SupaProxy'
+  readonly icon = INJECTION_SANITISER_ICON
   readonly stage = 'retrieval' as const
   readonly configSchema = {
     fields: [

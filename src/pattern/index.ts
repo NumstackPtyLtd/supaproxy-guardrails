@@ -1,5 +1,6 @@
 import type { GuardrailPlugin, GuardrailInput, GuardrailOutput, PatternRule } from '../types.js'
 import { BUILT_IN_RULES } from './rules.js'
+import { PATTERN_GUARD_ICON } from '../icons.js'
 
 function simpleHash(str: string): string {
   let hash = 0
@@ -16,6 +17,7 @@ export class PatternGuardrail implements GuardrailPlugin {
   readonly description = 'Regex and token matching for PII, credentials, and custom patterns. No external calls.'
   readonly version = '0.2.0'
   readonly author = 'SupaProxy'
+  readonly icon = PATTERN_GUARD_ICON
   readonly stage = 'pre-llm' as const
   readonly configSchema = {
     fields: [

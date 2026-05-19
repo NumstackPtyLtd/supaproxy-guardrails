@@ -5,6 +5,7 @@
  * original intent. Prevents injection via tool output from
  * triggering destructive operations.
  */
+import { WRITE_GUARD_ICON } from '../icons.js'
 
 export interface ToolCallContext {
   toolName: string
@@ -95,6 +96,7 @@ export class WriteGuardRail implements ExecutionRailPlugin {
   readonly description = 'Blocks write tool calls when the user query does not express write intent. Prevents the AI from being tricked into destructive operations via indirect injection.'
   readonly version = '0.3.0'
   readonly author = 'SupaProxy'
+  readonly icon = WRITE_GUARD_ICON
   readonly stage = 'execution' as const
   readonly configSchema = {
     fields: [
